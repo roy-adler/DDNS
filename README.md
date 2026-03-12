@@ -46,6 +46,26 @@ Notes:
 - `scheme` can be `http` or `https`.
 - `port` defaults to `DDNS_DEFAULT_UPSTREAM_PORT`.
 
+### Read current target
+
+`GET /api/target`
+
+Headers:
+
+- `Authorization: Bearer <DDNS_API_TOKEN>` (or `X-API-Token: <token>`)
+
+Response:
+
+```json
+{
+  "target": {
+    "ip": "203.0.113.42",
+    "port": 80,
+    "scheme": "http"
+  }
+}
+```
+
 ## Run with Docker Compose (Traefik)
 
 Edit `docker-compose.yml`:

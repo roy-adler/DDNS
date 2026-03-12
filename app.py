@@ -118,6 +118,10 @@ class DDNSProxyHandler(BaseHTTPRequestHandler):
             self._handle_update()
             return
 
+        if self.path.startswith("/api/target"):
+            self._handle_get_target()
+            return
+
         self._forward_request()
 
     def _authenticate(self) -> bool:
@@ -176,6 +180,18 @@ class DDNSProxyHandler(BaseHTTPRequestHandler):
 
         target = self.store.set_target(raw_ip, scheme, port)
         self._json_response(200, {"updated": True, "target": target})
+
+    def _handle_get_target(self) -> None:
+        if self.command != "GET":
+            self._json_response(405, {"error": "method not allowed"})
+            return
+
+        if not self._authenticate():
+            self._json_response(401, {"error": "unauthorized"})
+            return
+
+        target = self.store.get_target()
+        self._json_response(200, {"target": target})
 
     def _ip_from_request(self) -> str:
         forwarded_for = self.headers.get("X-Forwarded-For", "")
